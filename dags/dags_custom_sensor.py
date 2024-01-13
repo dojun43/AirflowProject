@@ -22,6 +22,6 @@ with DAG(
         task_id='RealtimeCityAir_status_to_csv',
         dataset_nm='RealtimeCityAir',
         path='/opt/airflow/files/RealtimeCityAir/',
-        file_name='RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ts_nodash}}.csv'
+        file_name='RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ds}}.csv'
     )
     
