@@ -34,20 +34,18 @@ class SeoulApiHourSensor(BaseSensorOperator):
         key_nm = list(contents.keys())[0]
         row_data = contents.get(key_nm).get('row')
         last_time = row_data[0].get(self.base_dt_col)
-        search_ymd = (context.get('data_interval_end').in_timezone('Asia/Seoul') + relativedelta(hours=self.hour_off)).strftime('%Y-%m-%d %H:00')
+        search_ymdh = (context.get('data_interval_end').in_timezone('Asia/Seoul') + relativedelta(hours=self.hour_off)).strftime('%Y-%m-%d %H:00')
+        
         try:
             import pendulum
             pendulum.from_format(last_time, 'YYYYMMDDHHmm')
         except:
             from airflow.exceptions import AirflowException
-            AirflowException(f'{self.base_dt_col} 컬럼은 YYYY.MM.DD HH 또는 YYYY/MM/DD HH 형태가 아닙니다.')
+            AirflowException(f'{self.base_dt_col} 컬럼은 YYYYMMDDHHmm 형태가 아닙니다.')
 
-        self.log.info(f'last_time:{last_time}')
-        self.log.info(f'search_ymd:{search_ymd}')
-
-        if last_time >= search_ymd:
-            self.log.info(f'생성 확인(기준 날짜: {search_ymd} / API Last 날짜: {last_time})')
+        if last_time >= search_ymdh:
+            self.log.info(f'생성 확인(기준 날짜: {search_ymdh} / API Last 날짜: {last_time})')
             return True
         else:
-            self.log.info(f'Update 미완료 (기준 날짜: {search_ymd} / API Last 날짜:{last_time})')
+            self.log.info(f'Update 미완료 (기준 날짜: {search_ymdh} / API Last 날짜:{last_time})')
             return False

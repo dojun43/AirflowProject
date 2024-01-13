@@ -1,4 +1,5 @@
 from sensors.seoul_api_hour_sensor import SeoulApiHourSensor
+from operators.seoul_api_to_csv_operator import SeoulApiToCsvOperator
 from airflow import DAG
 import pendulum
 
@@ -8,11 +9,19 @@ with DAG(
     schedule=None,
     catchup=False
 ) as dag:
-    status_sensor = SeoulApiHourSensor(
-        task_id='status_sensor',
+    RealtimeCityAir_status_sensor = SeoulApiHourSensor(
+        task_id='RealtimeCityAir_status_sensor',
         dataset_nm='RealtimeCityAir',
         base_dt_col='MSRDT',
         hour_off=0,
         poke_interval=600,
         mode='reschedule'
     )
+
+    RealtimeCityAir_status_to_csv = SeoulApiToCsvOperator(
+        task_id='RealtimeCityAir_status_to_csv',
+        dataset_nm='RealtimeCityAir',
+        path='/opt/airflow/files/RealtimeCityAir/',
+        file_name='RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ts_nodash}}.csv'
+    )
+    
