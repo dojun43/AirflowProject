@@ -34,7 +34,7 @@ class SeoulApiHourSensor(BaseSensorOperator):
         key_nm = list(contents.keys())[0]
         row_data = contents.get(key_nm).get('row')
         last_time = row_data[0].get(self.base_dt_col)
-        search_ymd = (context.get('data_interval_end').in_timezone('Asia/Seoul') + relativedelta(hours=self.hour_off)).strftime('%Y-%m-%d %H:%M')
+        search_ymd = (context.get('data_interval_end').in_timezone('Asia/Seoul') + relativedelta(hours=self.hour_off)).strftime('%Y-%m-%d %H:00')
         try:
             import pendulum
             pendulum.from_format(last_time, 'YYYYMMDDHHmm')
