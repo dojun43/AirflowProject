@@ -24,4 +24,6 @@ with DAG(
         path='/opt/airflow/files/RealtimeCityAir/',
         file_name='RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ds}}.csv'
     )
+
+    RealtimeCityAir_status_sensor >> RealtimeCityAir_status_to_csv
     
