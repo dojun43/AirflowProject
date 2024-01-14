@@ -15,7 +15,7 @@ with DAG(
         task_id='RealtimeCityAir_status_to_csv',
         dataset_nm='RealtimeCityAir',
         path='/opt/airflow/files/RealtimeCityAir/',
-        file_name='RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ts_nodash}}.csv'
+        file_name='RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ds}}.csv'
     )
 
     def insrt_postgres(postgres_conn_id, tbl_nm, file_nm, **kwargs):
@@ -26,8 +26,8 @@ with DAG(
         task_id='insrt_postgres',
         python_callable=insrt_postgres,
         op_kwargs={'postgres_conn_id': 'conn-db-postgres-custom',
-                'tbl_nm': 'RealtimeCityAir',
-                'file_nm':'/opt/airflow/files/RealtimeCityAir/RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ts_nodash}}.csv'
+                'tbl_nm': 'RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ds}}',
+                'file_nm':'/opt/airflow/files/RealtimeCityAir/RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ds}}.csv'
                 }
     )
 
