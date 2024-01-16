@@ -16,7 +16,7 @@ with DAG(
         task_id='RealtimeCityAir_status_sensor',
         dataset_nm='RealtimeCityAir',
         base_dt_col='MSRDT',
-        day_off=0,
+        hour_off=0,
         poke_interval=600,
         timeout = 600*6,
         mode='reschedule'
