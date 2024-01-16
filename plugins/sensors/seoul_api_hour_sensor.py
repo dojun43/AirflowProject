@@ -38,7 +38,7 @@ class SeoulApiHourSensor(BaseSensorOperator):
             from airflow.exceptions import AirflowException
             AirflowException(f'{self.base_dt_col} 컬럼은 YYYYMMDDHHmm 형태가 아닙니다.')
 
-        search_ymd = (context.get('data_interval_end').in_timezone('Asia/Seoul') + relativedelta(days=self.day_off)).strftime('%Y-%m-%d %H:00')
+        search_ymd = (context.get('data_interval_end').in_timezone('Asia/Seoul') + relativedelta(hours=self.hour_off)).strftime('%Y-%m-%d %H:00')
         search_ymd = pendulum.from_format(search_ymd, 'YYYY-MM-DD HH:mm')
 
         if last_date >= search_ymd:
