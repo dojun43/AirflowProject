@@ -7,8 +7,8 @@ class SeoulApiHourSensor(BaseSensorOperator):
     def __init__(self, dataset_nm, base_dt_col, hour_off=0, **kwargs):
         '''
         dataset_nm: 서울시 공공데이터 포털에서 센싱하고자 하는 데이터셋 명
-        base_dt_col: 센싱 기준 컬럼 (yyyy.mm.dd... or yyyy/mm/dd... 형태만 가능)
-        day_off: 배치일 기준 생성여부를 확인하고자 하는 날짜 차이를 입력 (기본값: 0)
+        base_dt_col: 센싱 기준 컬럼 (YYYYMMDDHHmm 형태만 가능)
+        hour_off: 배치일 기준 생성여부를 확인하고자 하는 시간 차이를 입력 (기본값: 0)
         '''
         super().__init__(**kwargs)
         self.http_conn_id = 'openapi.seoul.go.kr'
