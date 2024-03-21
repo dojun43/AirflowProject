@@ -2,6 +2,7 @@ from airflow import DAG
 import pendulum
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 from sensors.seoul_api_hour_sensor import SeoulApiHourSensor
 from operators.seoul_api_to_csv_operator import SeoulApiToCsvOperator
 from hooks.custom_postgres_hook import CustomPostgresHook
@@ -38,4 +39,15 @@ with DAG(
         bucket='dodo_bucket_1'
     )
 
-    RealtimeCityAir_status_sensor >> RealtimeCityAir_status_to_csv >> csv_to_gcs
+    gcs_to_bq = GCSToBigQueryOperator(
+        task_id='gcs_to_bq',
+        bucket='dodo_bucket_1',
+        source_objects=['RealtimeCityAir/RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ds}}.csv'],
+        source_format='CSV',
+        destination_project_dataset_table="double-carport-409511.RealtimeCityAir.RealtimeCityAir_{{data_interval_end.in_timezone("Asia/Seoul") | ds}}",
+        skip_leading_rows=1,
+        write_disposition="WRITE_TRUNCATE",
+        gcp_conn_id="google_cloud_conn_id"
+    )
+
+    RealtimeCityAir_status_sensor >> RealtimeCityAir_status_to_csv >> csv_to_gcs >> gcs_to_bq
